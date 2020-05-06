@@ -27,11 +27,11 @@ function mainMenu() {
             break;
         
         case "View All Employees by Department":
-            //query function
+            departmentSearch();
             break;
         
         case "View All Employees by Roles":
-            //query function
+            roleSearch();
             break;
         
         case "Add an Employee":
@@ -53,4 +53,49 @@ function mainMenu() {
     })
 } 
 
+function departmentSearch() {
+    connection.query("SELECT * FROM department", function(err, res) {
+        inquirer.prompt({
+            name: "department",
+            type: "list",
+            choices: function() {
+                const choiceArr = [];
+                for (let i = 0; i < res.length; i++) {
+                    choiceArr.push(res[i].name);
+                }
+                return choiceArr;
+            },
+            message: "Which department would you like to search by?"
+        }).then(function (answer){
+            const userChoice = answer.department;
+            // console.log(userChoice);
+            queryFunctions.findByDepartment(userChoice);
+        })
+    })
+    
+}
+
+function roleSearch() {
+    connection.query("SELECT * FROM role", function(err, res) {
+        inquirer.prompt({
+            name: "role",
+            type: "list",
+            choices: function() {
+                const choiceArr = [];
+                for (let i = 0; i < res.length; i++) {
+                    choiceArr.push(res[i].title);
+                }
+                return choiceArr;
+            },
+            message: "Which role would you like to search by?"
+        }).then(function(answer) {
+            const roleChoice = answer.role;
+            queryFunctions.findAllRoles(roleChoice)
+        })
+    })
+}
+
+function addEmployee() {
+    
+}
 mainMenu();

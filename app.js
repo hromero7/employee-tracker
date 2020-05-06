@@ -2,21 +2,9 @@ const connection = require("./server");
 const cTable = require ("console.table");
 
 connection;
-// function queryDanceSongs() {
-//     var query = connection.query("SELECT * FROM songs WHERE genre=?", ["Dance"], function(err, res) {
-//       if (err) throw err;
-//       for (var i = 0; i < res.length; i++) {
-//         console.log(res[i].id + " | " + res[i].title + " | " + res[i].artist + " | " + res[i].genre);
-//       }
-//     });
-  
-//     // logs the actual query being run
-//     console.log(query.sql);
-//     connection.end();
-//   }
 
 const queryAllEmployees = function () {
-    const query = connection.query("SELECT * FROM employee LEFT JOIN role ON (employee.role_id = role.id)", function(err, res) {
+    connection.query("SELECT first_name, last_name, title, name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) JOIN department ON (department.id = role.department_id)", function(err, res) {
         if (err) throw err;
         console.table(res);
         connection.end();
@@ -25,15 +13,23 @@ const queryAllEmployees = function () {
     })
 }
 
-const findAllRoles = function () {
-    console.log("hello world");
+const findByDepartment = function (userChoice) {
+    connection.query("SELECT first_name, last_name, title, name, salary FROM department LEFT JOIN role ON (department.id = role.department_id) JOIN employee ON (employee.role_id = role.id) WHERE (department.name = ?)", [userChoice], function(err, res) {
+        console.table(res);
+    })
     connection.end();
-    //use joins to find employee by roles
-    //use role id to join table with role
+}
+
+const findAllRoles = function (roleChoice) {
+    connection.query("SELECT first_name, last_name, title, name, salary, manager_id FROM employee LEFT JOIN role ON (employee.role_id = role.id) JOIN department ON (department.id = role.department_id) WHERE (role.title = ?)", [roleChoice], function(err, res){
+        console.table(res);
+        connection.end();
+    })
 }
 
 
 module.exports = {
     queryAllEmployees,
+    findByDepartment,
     findAllRoles
 };
