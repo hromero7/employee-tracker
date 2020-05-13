@@ -48,6 +48,7 @@ function mainMenu() {
 
         case "Update Employee Role":
             //query
+            updateEmployeeRole();
             break;
         }
 
@@ -190,5 +191,40 @@ function addRole() {
         })
     })
     
+}
+function updateEmployeeRole () {
+    connection.query("SELECT * FROM employee ", function(err, res) {
+        connection.query("SELECT * FROM role", function (err, role){
+
+        
+        // console.log(res);
+        const employeeChoices = res.map(({id, first_name, last_name}) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+        const roleChoices = role.map(({id, title}) => ({
+            name: `${title}`,
+            value: id
+        }));
+        
+        inquirer.prompt([
+            {
+                name: "employee",
+                type: "list",
+                choices: employeeChoices,
+                message: "Which employee's role would you like to update?"
+            },
+            {
+                name: "roleId",
+                type: "list",
+                choices: roleChoices,
+                message: "Which role do you want to assign the selected employee?"
+            }
+        ]).then(answers => {
+            queryFunctions.updateEmployee(answers);
+            // console.log(answers);
+        })
+    });
+    });
 }
 mainMenu();

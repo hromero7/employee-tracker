@@ -69,11 +69,20 @@ const addNewRole = function(answers, departmentId) {
         }
     )
 }
+
+const updateEmployee = function(answers){
+    connection.query(
+        "UPDATE employee SET role_id = ? WHERE id = ?", [answers.roleId, answers.employee], function(err, res){
+            if (err) throw err;
+            console.log("Employee role has been updated.");
+        });
+}
 module.exports = {
     queryAllEmployees,
     findByDepartment,
     findAllRoles,
     addNewEmployee,
     addNewDepartment,
-    addNewRole
+    addNewRole,
+    updateEmployee
 };
